@@ -13,7 +13,7 @@ venv/
 
 # Local probe output
 probe-output/
-snapshots/
+/snapshots/
 *.log
 
 # Real FL Studio/audio/project material must not be committed

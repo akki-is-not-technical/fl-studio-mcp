@@ -1,0 +1,160 @@
+{
+  "schema_version": "0.1.0",
+  "probe_version": "0.1.0",
+  "generated_at_local": "2026-05-08T03:15:00-0700",
+  "reason": "OnInit",
+  "read_only": true,
+  "environment": {
+    "probe_version": "0.1.0",
+    "snapshot_schema_version": "0.1.0",
+    "python_version": "3.x redacted",
+    "script_output_dir": "C:\\Users\\REDACTED\\Documents\\FL Studio MCP Probe\\Snapshots",
+    "module_imports": {
+      "json": true,
+      "os": true,
+      "sys": true,
+      "time": true,
+      "traceback": true,
+      "arrangement": true,
+      "channels": true,
+      "device": true,
+      "general": true,
+      "mixer": true,
+      "patterns": true,
+      "playlist": true,
+      "plugins": true,
+      "transport": true,
+      "ui": true
+    },
+    "program_title": "FL Studio",
+    "program_version": "FL Studio version placeholder",
+    "midi_scripting_api_version": 37,
+    "device_name": "Akki Read-Only MCP Probe"
+  },
+  "project": {
+    "title": "Sandbox Test Project",
+    "author": "REDACTED",
+    "genre": "Test",
+    "changed": false,
+    "safe_to_edit": true
+  },
+  "transport": {
+    "is_playing": false,
+    "is_recording": false,
+    "loop_mode": 0,
+    "song_pos": 0,
+    "song_pos_ppq": 0,
+    "bpm": 140.0
+  },
+  "mixer": {
+    "track_count": 4,
+    "selected_track": 1,
+    "tracks": [
+      {
+        "index": 0,
+        "name": "Master",
+        "color": { "raw": null, "hex": null },
+        "enabled": true,
+        "muted": false,
+        "solo": false,
+        "armed": false,
+        "selected": false,
+        "volume": 0.8,
+        "pan": 0.0,
+        "stereo_separation": 0.0
+      },
+      {
+        "index": 1,
+        "name": "Main Vox",
+        "color": { "raw": 4286611584, "hex": "0xFF800000" },
+        "enabled": true,
+        "muted": false,
+        "solo": false,
+        "armed": false,
+        "selected": true,
+        "volume": 0.78,
+        "pan": 0.0,
+        "stereo_separation": 0.0
+      }
+    ]
+  },
+  "channels": {
+    "channel_count": 2,
+    "selected_channel": 0,
+    "items": [
+      {
+        "index": 0,
+        "name": "Lead Vocal Test",
+        "color": { "raw": null, "hex": null },
+        "type": 4,
+        "volume": 0.8,
+        "pan": 0.0,
+        "pitch": 0.0,
+        "muted": false,
+        "solo": false,
+        "selected": true,
+        "target_mixer_track": 1,
+        "midi_in_port": -1
+      }
+    ]
+  },
+  "plugins": {
+    "generators": [],
+    "mixer_effects": [
+      {
+        "track_index": 1,
+        "slots": [
+          {
+            "index": 1,
+            "slot_index": 0,
+            "use_global_index": false,
+            "valid": true,
+            "name": "Fruity Parametric EQ 2",
+            "user_name": "Fruity Parametric EQ 2",
+            "parameter_count": 42,
+            "sampled_parameters": [
+              { "index": 0, "name": "Band 1 Freq", "value": 0.25 }
+            ]
+          }
+        ]
+      }
+    ],
+    "parameter_sample_limit": {
+      "generators": 12,
+      "mixer_effects": 12
+    }
+  },
+  "playlist": {
+    "scan_limit": 128,
+    "tracks": [
+      {
+        "index": 1,
+        "name": "Vocals",
+        "color": { "raw": null, "hex": null },
+        "muted": false,
+        "solo": false,
+        "selected": true
+      }
+    ]
+  },
+  "patterns": {
+    "pattern_count": 1,
+    "current_pattern": 1,
+    "items": [
+      {
+        "index": 1,
+        "name": "Pattern 1",
+        "color": { "raw": null, "hex": null }
+      }
+    ]
+  },
+  "arrangement": {
+    "markers_scan_limit": 128,
+    "markers": []
+  },
+  "ui": {
+    "focused_form_caption": "Playlist",
+    "focused_plugin_name": ""
+  },
+  "errors": []
+}
