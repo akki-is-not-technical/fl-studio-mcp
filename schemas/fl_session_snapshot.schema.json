@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/fl-studio-mcp/schemas/fl_session_snapshot.schema.json",
+  "title": "FL Studio MCP Read-Only Session Snapshot",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "probe_version",
+    "generated_at_local",
+    "reason",
+    "read_only",
+    "environment",
+    "project",
+    "transport",
+    "mixer",
+    "channels",
+    "plugins",
+    "errors"
+  ],
+  "properties": {
+    "schema_version": { "type": "string" },
+    "probe_version": { "type": "string" },
+    "generated_at_local": { "type": "string" },
+    "reason": { "type": "string" },
+    "read_only": { "const": true },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "probe_version": { "type": "string" },
+        "snapshot_schema_version": { "type": "string" },
+        "python_version": { "type": "string" },
+        "script_output_dir": { "type": "string" },
+        "module_imports": { "type": "object" },
+        "program_title": { "type": ["string", "null"] },
+        "program_version": { "type": ["string", "null"] },
+        "midi_scripting_api_version": { "type": ["integer", "null"] },
+        "device_name": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "title": { "type": ["string", "null"] },
+        "author": { "type": ["string", "null"] },
+        "genre": { "type": ["string", "null"] },
+        "changed": { "type": ["boolean", "null"] },
+        "safe_to_edit": { "type": ["boolean", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "transport": {
+      "type": "object",
+      "properties": {
+        "is_playing": { "type": ["boolean", "null"] },
+        "is_recording": { "type": ["boolean", "null"] },
+        "loop_mode": { "type": ["integer", "null"] },
+        "song_pos": { "type": ["integer", "null"] },
+        "song_pos_ppq": { "type": ["integer", "null"] },
+        "bpm": { "type": ["number", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "mixer": {
+      "type": "object",
+      "required": ["track_count", "tracks"],
+      "properties": {
+        "track_count": { "type": "integer" },
+        "selected_track": { "type": ["integer", "null"] },
+        "tracks": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/mixer_track" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "channels": {
+      "type": "object",
+      "required": ["channel_count", "items"],
+      "properties": {
+        "channel_count": { "type": "integer" },
+        "selected_channel": { "type": ["integer", "null"] },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/channel" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "plugins": {
+      "type": "object",
+      "properties": {
+        "generators": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/plugin" }
+        },
+        "mixer_effects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["track_index", "slots"],
+            "properties": {
+              "track_index": { "type": "integer" },
+              "slots": {
+                "type": "array",
+                "items": { "$ref": "#/$defs/plugin" }
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "playlist": { "type": "object", "additionalProperties": true },
+    "patterns": { "type": "object", "additionalProperties": true },
+    "arrangement": { "type": "object", "additionalProperties": true },
+    "ui": { "type": "object", "additionalProperties": true },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "error": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "color": {
+      "type": "object",
+      "properties": {
+        "raw": { "type": ["integer", "string", "null"] },
+        "hex": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "mixer_track": {
+      "type": "object",
+      "required": ["index"],
+      "properties": {
+        "index": { "type": "integer" },
+        "name": { "type": ["string", "null"] },
+        "color": { "$ref": "#/$defs/color" },
+        "enabled": { "type": ["boolean", "null"] },
+        "muted": { "type": ["boolean", "null"] },
+        "solo": { "type": ["boolean", "null"] },
+        "armed": { "type": ["boolean", "null"] },
+        "selected": { "type": ["boolean", "null"] },
+        "volume": { "type": ["number", "null"] },
+        "pan": { "type": ["number", "null"] },
+        "stereo_separation": { "type": ["number", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "channel": {
+      "type": "object",
+      "required": ["index"],
+      "properties": {
+        "index": { "type": "integer" },
+        "name": { "type": ["string", "null"] },
+        "color": { "$ref": "#/$defs/color" },
+        "type": { "type": ["integer", "null"] },
+        "volume": { "type": ["number", "null"] },
+        "pan": { "type": ["number", "null"] },
+        "pitch": { "type": ["number", "null"] },
+        "muted": { "type": ["boolean", "null"] },
+        "solo": { "type": ["boolean", "null"] },
+        "selected": { "type": ["boolean", "null"] },
+        "target_mixer_track": { "type": ["integer", "null"] },
+        "midi_in_port": { "type": ["integer", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "plugin": {
+      "type": "object",
+      "required": ["index", "slot_index", "valid"],
+      "properties": {
+        "index": { "type": "integer" },
+        "slot_index": { "type": "integer" },
+        "use_global_index": { "type": "boolean" },
+        "valid": { "type": ["boolean", "null"] },
+        "name": { "type": ["string", "null"] },
+        "user_name": { "type": ["string", "null"] },
+        "parameter_count": { "type": ["integer", "null"] },
+        "sampled_parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "index": { "type": "integer" },
+              "name": { "type": ["string", "null"] },
+              "value": { "type": ["number", "null"] }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

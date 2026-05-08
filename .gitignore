@@ -1,0 +1,35 @@
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Local probe output
+probe-output/
+snapshots/
+*.log
+
+# Real FL Studio/audio/project material must not be committed
+*.flp
+*.wav
+*.mp3
+*.aiff
+*.aif
+*.flac
+*.ogg
+*.mid
+*.midi
+*.fst
+*.fstk
+
+# Secrets/local config
+.env
+.env.*
+local.config.*
