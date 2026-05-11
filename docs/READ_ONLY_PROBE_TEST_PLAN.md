@@ -9,6 +9,9 @@ Confirm what FL Studio state can be read safely from a MIDI script on the Window
 - FL Studio installed on Windows.
 - Repo pulled or downloaded on Windows.
 - Probe installed using `docs/WINDOWS_PROBE_INSTALL.md`.
+- `LoopBe Internal MIDI` visible in FL Studio MIDI Settings.
+- `LoopBe Internal MIDI` enabled as Input only.
+- Output disabled and Send master sync off.
 - Disposable/sandbox `.flp` open.
 - FL Studio version recorded below.
 
@@ -36,13 +39,15 @@ Do not use a real song session.
 ## Test Steps
 
 1. Open the sandbox project.
-2. Enable `Akki Read-Only MCP Probe (user)` in MIDI Settings.
-3. Open `View -> Script output`.
-4. Confirm an initialization message appears.
-5. Wait for `SNAPSHOT_BEGIN`, one or more `SNAPSHOT_CHUNK` lines, and `SNAPSHOT_END`.
-6. Copy the `SNAPSHOT_CHUNK` lines from Script output.
-7. Redact private song/client/project names before sharing.
-8. Check whether these sections are present in the chunked JSON:
+2. In MIDI Settings, select `LoopBe Internal MIDI` in the Input list.
+3. Enable the Input and set Controller type to `Akki Read-Only MCP Probe (user)`.
+4. Keep LoopBe disabled in Output and keep Send master sync off.
+5. Open `View -> Script output`.
+6. Confirm an initialization message appears.
+7. Wait for `SNAPSHOT_BEGIN`, one or more `SNAPSHOT_CHUNK` lines, and `SNAPSHOT_END`.
+8. Copy the `SNAPSHOT_CHUNK` lines from Script output.
+9. Redact private song/client/project names before sharing.
+10. Check whether these sections are present in the chunked JSON:
    - `environment`
    - `project`
    - `transport`
@@ -52,15 +57,16 @@ Do not use a real song session.
    - `playlist.tracks`
    - `patterns`
    - `errors`
-9. Make a small safe sandbox change, such as renaming a mixer track.
-10. Wait for another snapshot or reload the script from Script output.
-11. Check whether the new name appears in the printed chunks.
+11. Make a small safe sandbox change, such as renaming a mixer track.
+12. Wait for another snapshot or reload the script from Script output.
+13. Check whether the new name appears in the printed chunks.
 
 ## What To Copy Back To Codex
 
 Copy back:
 
 - FL Studio version.
+- Whether `LoopBe Internal MIDI` appears in MIDI Settings and is enabled as Input.
 - Whether the script appears in MIDI Settings.
 - Any Script output errors.
 - The `SNAPSHOT_BEGIN`, `SNAPSHOT_CHUNK`, and `SNAPSHOT_END` lines after removing any private song/client names.
