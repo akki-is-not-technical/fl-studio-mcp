@@ -2,7 +2,7 @@
 
 Repo-ready source for an eventual Codex-to-FL-Studio control bridge.
 
-Current status: read-only capability probe only. v0.1.1 prints snapshots to FL Studio Script output instead of writing files from inside FL Studio.
+Current status: read-only capability probe only. v0.1.2 prints snapshots to FL Studio Script output, avoids FL Studio filesystem writes, starts playlist scanning at track 1, and reports both raw and normalized tempo.
 
 ## Environment Model
 

@@ -1,12 +1,17 @@
 {
-  "schema_version": "0.1.1",
-  "probe_version": "0.1.1",
+  "schema_version": "0.1.2",
+  "probe_version": "0.1.2",
   "generated_at_local": "2026-05-08T03:15:00-0700",
   "reason": "OnInit",
   "read_only": true,
+  "snapshot_meta": {
+    "transport": "script_output",
+    "chunk_size": 900,
+    "playlist_index_base": 1
+  },
   "environment": {
-    "probe_version": "0.1.1",
-    "snapshot_schema_version": "0.1.1",
+    "probe_version": "0.1.2",
+    "snapshot_schema_version": "0.1.2",
     "python_version": "3.x redacted",
     "snapshot_transport": "script_output",
     "file_output": "disabled",
@@ -43,7 +48,9 @@
     "loop_mode": 0,
     "song_pos": 0,
     "song_pos_ppq": 0,
-    "bpm": 140.0
+    "bpm": 140.0,
+    "bpm_raw": 140000.0,
+    "bpm_scale": "divided_by_1000"
   },
   "mixer": {
     "scan_limit": 32,
@@ -127,6 +134,8 @@
   },
   "playlist": {
     "scan_limit": 32,
+    "scan_start_index": 1,
+    "scan_end_index": 32,
     "tracks": [
       {
         "index": 1,

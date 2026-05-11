@@ -84,7 +84,7 @@ The probe prints snapshots to `View -> Script output`. Look for:
 [AkkiReadOnlyProbe] SNAPSHOT_END
 ```
 
-No snapshot folder or JSON file is expected in v0.1.1. FL Studio MIDI script filesystem writes are intentionally avoided.
+No snapshot folder or JSON file is expected in v0.1.2. FL Studio MIDI script filesystem writes are intentionally avoided.
 
 ## Remove
 

@@ -18,7 +18,7 @@ Confirm what FL Studio state can be read safely from a MIDI script on the Window
 ```text
 FL Studio version:
 Windows version:
-Probe version: 0.1.1
+Probe version: 0.1.2
 Date tested:
 ```
 
@@ -50,7 +50,7 @@ Do not use a real song session.
 10. Check whether these sections are present in the chunked JSON:
    - `environment`
    - `project`
-   - `transport`
+   - `transport` with `bpm`, `bpm_raw`, and `bpm_scale`
    - `mixer.tracks`
    - `channels.items`
    - `plugins`

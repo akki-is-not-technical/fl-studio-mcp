@@ -1,7 +1,7 @@
 # name=Akki Read-Only MCP Probe
 #
 # Read-only FL Studio MIDI script probe for the fl-studio-mcp project.
-# Version: 0.1.1
+# Version: 0.1.2
 #
 # Safety contract:
 # - No FL Studio setters.
@@ -27,8 +27,8 @@ import transport
 import ui
 
 
-PROBE_VERSION = "0.1.1"
-SNAPSHOT_SCHEMA_VERSION = "0.1.1"
+PROBE_VERSION = "0.1.2"
+SNAPSHOT_SCHEMA_VERSION = "0.1.2"
 
 MAX_MIXER_TRACKS = 32
 MAX_MIXER_PLUGIN_SLOTS = 10
@@ -108,11 +108,30 @@ def _now_local():
     return time.strftime("%Y-%m-%dT%H:%M:%S%z")
 
 
+def _one_line(value):
+    return str(value).replace("\r", " ").replace("\n", " ")
+
+
+def _normalize_bpm(raw_value):
+    if raw_value is None:
+        return {"raw": None, "normalized": None, "scale": None}
+
+    try:
+        raw = float(raw_value)
+    except Exception:
+        return {"raw": raw_value, "normalized": None, "scale": "unparsed"}
+
+    if raw > 1000:
+        return {"raw": raw, "normalized": raw / 1000.0, "scale": "divided_by_1000"}
+
+    return {"raw": raw, "normalized": raw, "scale": "raw"}
+
+
 def _collect_environment():
     return {
         "probe_version": PROBE_VERSION,
         "snapshot_schema_version": SNAPSHOT_SCHEMA_VERSION,
-        "python_version": sys.version,
+        "python_version": _one_line(sys.version),
         "snapshot_transport": "script_output",
         "file_output": "disabled",
         "module_imports": {
@@ -150,13 +169,17 @@ def _collect_project():
 
 
 def _collect_transport():
+    bpm_raw = _safe_float("mixer.getCurrentTempo", lambda: mixer.getCurrentTempo())
+    bpm = _normalize_bpm(bpm_raw)
     return {
         "is_playing": _boolish(_safe_int("transport.isPlaying", lambda: transport.isPlaying())),
         "is_recording": _boolish(_safe_int("transport.isRecording", lambda: transport.isRecording())),
         "loop_mode": _safe_int("transport.getLoopMode", lambda: transport.getLoopMode()),
         "song_pos": _safe_int("transport.getSongPos", lambda: transport.getSongPos()),
         "song_pos_ppq": _safe_int("transport.getSongPos.ppq", lambda: transport.getSongPos(1)),
-        "bpm": _safe_float("mixer.getCurrentTempo", lambda: mixer.getCurrentTempo()),
+        "bpm": bpm["normalized"],
+        "bpm_raw": bpm["raw"],
+        "bpm_scale": bpm["scale"],
     }
 
 
@@ -321,12 +344,14 @@ def _collect_playlist_track(index):
 
 def _collect_playlist():
     tracks = []
-    for index in range(MAX_PLAYLIST_TRACKS):
+    for index in range(1, MAX_PLAYLIST_TRACKS + 1):
         track = _collect_playlist_track(index)
         if track["name"] or track["color"]["raw"] is not None or track["muted"] is not None:
             tracks.append(track)
     return {
         "scan_limit": MAX_PLAYLIST_TRACKS,
+        "scan_start_index": 1,
+        "scan_end_index": MAX_PLAYLIST_TRACKS,
         "tracks": tracks,
     }
 
@@ -385,6 +410,11 @@ def build_snapshot(reason):
         "generated_at_local": _now_local(),
         "reason": str(reason or "manual"),
         "read_only": True,
+        "snapshot_meta": {
+            "transport": "script_output",
+            "chunk_size": PRINT_CHUNK_SIZE,
+            "playlist_index_base": 1,
+        },
         "environment": _collect_environment(),
         "project": _collect_project(),
         "transport": _collect_transport(),

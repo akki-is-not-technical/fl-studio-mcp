@@ -23,6 +23,15 @@
     "generated_at_local": { "type": "string" },
     "reason": { "type": "string" },
     "read_only": { "const": true },
+    "snapshot_meta": {
+      "type": "object",
+      "properties": {
+        "transport": { "type": ["string", "null"] },
+        "chunk_size": { "type": ["integer", "null"] },
+        "playlist_index_base": { "type": ["integer", "null"] }
+      },
+      "additionalProperties": true
+    },
     "environment": {
       "type": "object",
       "properties": {
@@ -58,7 +67,9 @@
         "loop_mode": { "type": ["integer", "null"] },
         "song_pos": { "type": ["integer", "null"] },
         "song_pos_ppq": { "type": ["integer", "null"] },
-        "bpm": { "type": ["number", "null"] }
+        "bpm": { "type": ["number", "null"] },
+        "bpm_raw": { "type": ["number", "string", "null"] },
+        "bpm_scale": { "type": ["string", "null"] }
       },
       "additionalProperties": true
     },
