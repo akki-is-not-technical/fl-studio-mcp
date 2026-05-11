@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/fl-studio-mcp/schemas/fl_session_snapshot.schema.json",
-  "title": "FL Studio MCP Read-Only Session Snapshot",
+  "title": "FL Studio MCP Read-Only Script Output Snapshot",
   "type": "object",
   "required": [
     "schema_version",
@@ -29,7 +29,8 @@
         "probe_version": { "type": "string" },
         "snapshot_schema_version": { "type": "string" },
         "python_version": { "type": "string" },
-        "script_output_dir": { "type": "string" },
+        "snapshot_transport": { "type": ["string", "null"] },
+        "file_output": { "type": ["string", "null"] },
         "module_imports": { "type": "object" },
         "program_title": { "type": ["string", "null"] },
         "program_version": { "type": ["string", "null"] },
@@ -63,8 +64,10 @@
     },
     "mixer": {
       "type": "object",
-      "required": ["track_count", "tracks"],
+      "required": ["tracks"],
       "properties": {
+        "scan_limit": { "type": "integer" },
+        "scanned_track_count": { "type": "integer" },
         "track_count": { "type": "integer" },
         "selected_track": { "type": ["integer", "null"] },
         "tracks": {
@@ -76,8 +79,10 @@
     },
     "channels": {
       "type": "object",
-      "required": ["channel_count", "items"],
+      "required": ["items"],
       "properties": {
+        "scan_limit": { "type": "integer" },
+        "scanned_channel_count": { "type": "integer" },
         "channel_count": { "type": "integer" },
         "selected_channel": { "type": ["integer", "null"] },
         "items": {

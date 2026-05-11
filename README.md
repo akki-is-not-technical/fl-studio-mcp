@@ -2,7 +2,7 @@
 
 Repo-ready source for an eventual Codex-to-FL-Studio control bridge.
 
-Current status: read-only capability probe only.
+Current status: read-only capability probe only. v0.1.1 prints snapshots to FL Studio Script output instead of writing files from inside FL Studio.
 
 ## Environment Model
 
@@ -87,13 +87,7 @@ Default FL Studio user script target:
 %USERPROFILE%\Documents\Image-Line\FL Studio\Settings\Hardware\AkkiReadOnlyProbe\device_AkkiReadOnlyProbe.py
 ```
 
-Default snapshot output:
-
-```text
-%USERPROFILE%\Documents\FL Studio MCP Probe\Snapshots\
-```
-
-You can override the output folder with the `FL_MCP_PROBE_OUTPUT_DIR` environment variable.
+Snapshot output is printed in `View -> Script output` as `SNAPSHOT_BEGIN`, `SNAPSHOT_CHUNK`, and `SNAPSHOT_END` lines. FL Studio MIDI script filesystem writes are not used.
 
 ## GitHub Setup
 

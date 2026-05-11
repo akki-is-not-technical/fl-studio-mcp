@@ -20,4 +20,4 @@ See:
 - `docs/READ_ONLY_PROBE_TEST_PLAN.md`
 - `docs/SAFETY.md`
 
-This script is read-only with respect to FL Studio. It writes snapshot JSON files to a normal documents folder but does not save, export, rename, route, arm, or change plugins in FL Studio.
+This script is read-only with respect to FL Studio. It prints chunked JSON snapshots to FL Studio Script output and does not write files, save, export, rename, route, arm, or change plugins in FL Studio.

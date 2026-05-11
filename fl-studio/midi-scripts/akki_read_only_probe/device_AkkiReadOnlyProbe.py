@@ -1,7 +1,7 @@
 # name=Akki Read-Only MCP Probe
 #
 # Read-only FL Studio MIDI script probe for the fl-studio-mcp project.
-# Version: 0.1.0
+# Version: 0.1.1
 #
 # Safety contract:
 # - No FL Studio setters.
@@ -9,13 +9,11 @@
 # - No exports.
 # - No plugin parameter changes.
 # - No UI automation.
-# - Writes JSON snapshots only to a normal output folder.
+# - No filesystem writes. Snapshots are printed to Script output.
 
 import json
-import os
 import sys
 import time
-import traceback
 
 import arrangement
 import channels
@@ -29,18 +27,19 @@ import transport
 import ui
 
 
-PROBE_VERSION = "0.1.0"
-SNAPSHOT_SCHEMA_VERSION = "0.1.0"
+PROBE_VERSION = "0.1.1"
+SNAPSHOT_SCHEMA_VERSION = "0.1.1"
 
-MAX_MIXER_TRACKS = 128
+MAX_MIXER_TRACKS = 32
 MAX_MIXER_PLUGIN_SLOTS = 10
-MAX_CHANNELS = 256
-MAX_CHANNEL_PLUGIN_PARAMS = 12
-MAX_MIXER_PLUGIN_PARAMS = 12
-MAX_PLAYLIST_TRACKS = 128
-MAX_PATTERNS = 256
-MAX_MARKERS = 128
+MAX_CHANNELS = 64
+MAX_CHANNEL_PLUGIN_PARAMS = 4
+MAX_MIXER_PLUGIN_PARAMS = 4
+MAX_PLAYLIST_TRACKS = 32
+MAX_PATTERNS = 64
+MAX_MARKERS = 32
 SNAPSHOT_INTERVAL_SECONDS = 5
+PRINT_CHUNK_SIZE = 900
 
 _last_snapshot_at = 0
 _snapshot_pending_reason = None
@@ -105,45 +104,8 @@ def _color_info(value):
         return {"raw": value, "hex": None}
 
 
-def _documents_dir():
-    custom = os.environ.get("FL_MCP_PROBE_OUTPUT_DIR")
-    if custom:
-        return custom
-
-    user_profile = os.environ.get("USERPROFILE")
-    if user_profile:
-        return os.path.join(user_profile, "Documents", "FL Studio MCP Probe")
-
-    return os.path.join(os.path.expanduser("~"), "Documents", "FL Studio MCP Probe")
-
-
-def _snapshot_dir():
-    return os.path.join(_documents_dir(), "Snapshots")
-
-
-def _ensure_output_dir():
-    path = _snapshot_dir()
-    if not os.path.isdir(path):
-        os.makedirs(path)
-    return path
-
-
-def _timestamp():
-    return time.strftime("%Y%m%d_%H%M%S")
-
-
 def _now_local():
     return time.strftime("%Y-%m-%dT%H:%M:%S%z")
-
-
-def _sanitize_reason(reason):
-    safe = []
-    for ch in str(reason or "manual"):
-        if ch.isalnum() or ch in ("-", "_"):
-            safe.append(ch)
-        else:
-            safe.append("_")
-    return "".join(safe)[:48] or "snapshot"
 
 
 def _collect_environment():
@@ -151,13 +113,12 @@ def _collect_environment():
         "probe_version": PROBE_VERSION,
         "snapshot_schema_version": SNAPSHOT_SCHEMA_VERSION,
         "python_version": sys.version,
-        "script_output_dir": _snapshot_dir(),
+        "snapshot_transport": "script_output",
+        "file_output": "disabled",
         "module_imports": {
             "json": True,
-            "os": True,
             "sys": True,
             "time": True,
-            "traceback": True,
             "arrangement": True,
             "channels": True,
             "device": True,
@@ -172,7 +133,9 @@ def _collect_environment():
         "program_title": _safe_str("ui.getProgTitle", lambda: ui.getProgTitle()),
         "program_version": _safe_str("ui.getVersion", lambda: ui.getVersion()),
         "midi_scripting_api_version": _safe_int("general.getVersion", lambda: general.getVersion()),
+        "device_assigned": _boolish(_safe_int("device.isAssigned", lambda: device.isAssigned())),
         "device_name": _safe_str("device.getName", lambda: device.getName()),
+        "device_port": _safe_int("device.getPortNumber", lambda: device.getPortNumber()),
     }
 
 
@@ -223,7 +186,8 @@ def _collect_mixer_track(index):
 def _collect_mixer():
     count = _track_count()
     return {
-        "track_count": count,
+        "scan_limit": MAX_MIXER_TRACKS,
+        "scanned_track_count": count,
         "selected_track": _safe_int("mixer.trackNumber", lambda: mixer.trackNumber()),
         "tracks": [_collect_mixer_track(index) for index in range(count)],
     }
@@ -258,13 +222,14 @@ def _collect_channel(index):
 def _collect_channels():
     count = _channel_count()
     return {
-        "channel_count": count,
+        "scan_limit": MAX_CHANNELS,
+        "scanned_channel_count": count,
         "selected_channel": _safe_int("channels.selectedChannel", lambda: channels.selectedChannel()),
         "items": [_collect_channel(index) for index in range(count)],
     }
 
 
-def _plugin_summary(index, slot_index=-1, use_global_index=False, max_params=12):
+def _plugin_summary(index, slot_index=-1, use_global_index=False, max_params=4):
     is_valid = _boolish(_safe_int("plugins.isValid", lambda: plugins.isValid(index, slot_index, use_global_index)))
     summary = {
         "index": index,
@@ -379,6 +344,7 @@ def _collect_patterns():
             "color": _color_info(_safe_int("patterns.getPatternColor", lambda index=index: patterns.getPatternColor(index))),
         })
     return {
+        "scan_limit": MAX_PATTERNS,
         "pattern_count": count,
         "current_pattern": _safe_int("patterns.patternNumber", lambda: patterns.patternNumber()),
         "items": items,
@@ -435,21 +401,19 @@ def build_snapshot(reason):
     return snapshot
 
 
-def write_snapshot(reason):
+def print_snapshot(reason):
     try:
-        out_dir = _ensure_output_dir()
-        filename = "fl_snapshot_%s_%s.json" % (_timestamp(), _sanitize_reason(reason))
-        path = os.path.join(out_dir, filename)
         snapshot = build_snapshot(reason)
-        with open(path, "w", encoding="utf-8") as handle:
-            json.dump(snapshot, handle, indent=2, sort_keys=True)
-            handle.write("\n")
-        _print("Wrote read-only snapshot: " + path)
-        return path
-    except Exception:
-        _print("Snapshot write failed:")
-        _print(traceback.format_exc())
-        return None
+        payload = json.dumps(snapshot, separators=(",", ":"), sort_keys=True)
+        total = (len(payload) + PRINT_CHUNK_SIZE - 1) // PRINT_CHUNK_SIZE
+        _print("SNAPSHOT_BEGIN reason=%s chunks=%s" % (str(reason or "manual"), total))
+        for index in range(total):
+            start = index * PRINT_CHUNK_SIZE
+            end = start + PRINT_CHUNK_SIZE
+            _print("SNAPSHOT_CHUNK %s/%s %s" % (index + 1, total, payload[start:end]))
+        _print("SNAPSHOT_END")
+    except Exception as exc:
+        _print("SNAPSHOT_ERROR " + repr(exc))
 
 
 def _queue_snapshot(reason):
@@ -457,7 +421,7 @@ def _queue_snapshot(reason):
     _snapshot_pending_reason = reason
 
 
-def _maybe_write_queued_snapshot():
+def _maybe_print_queued_snapshot():
     global _last_snapshot_at
     global _snapshot_pending_reason
 
@@ -471,13 +435,13 @@ def _maybe_write_queued_snapshot():
     reason = _snapshot_pending_reason
     _snapshot_pending_reason = None
     _last_snapshot_at = now
-    write_snapshot(reason)
+    print_snapshot(reason)
 
 
 def OnInit():
     _print("Initializing read-only probe v%s" % PROBE_VERSION)
-    _print("Output folder: " + _snapshot_dir())
-    _queue_snapshot("OnInit")
+    _print("File output disabled; copy SNAPSHOT_CHUNK lines from Script output")
+    print_snapshot("OnInit")
 
 
 def OnDeInit():
@@ -505,4 +469,4 @@ def OnDirtyChannel(index, flag):
 
 
 def OnIdle():
-    _maybe_write_queued_snapshot()
+    _maybe_print_queued_snapshot()

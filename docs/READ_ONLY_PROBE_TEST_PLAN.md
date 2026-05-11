@@ -15,7 +15,7 @@ Confirm what FL Studio state can be read safely from a MIDI script on the Window
 ```text
 FL Studio version:
 Windows version:
-Probe version: 0.1.0
+Probe version: 0.1.1
 Date tested:
 ```
 
@@ -39,11 +39,10 @@ Do not use a real song session.
 2. Enable `Akki Read-Only MCP Probe (user)` in MIDI Settings.
 3. Open `View -> Script output`.
 4. Confirm an initialization message appears.
-5. Wait 5-10 seconds.
-6. Check the snapshot output folder.
-7. Confirm at least one `.json` snapshot exists.
-8. Open the latest snapshot in a text editor.
-9. Check whether these sections are populated:
+5. Wait for `SNAPSHOT_BEGIN`, one or more `SNAPSHOT_CHUNK` lines, and `SNAPSHOT_END`.
+6. Copy the `SNAPSHOT_CHUNK` lines from Script output.
+7. Redact private song/client/project names before sharing.
+8. Check whether these sections are present in the chunked JSON:
    - `environment`
    - `project`
    - `transport`
@@ -53,9 +52,9 @@ Do not use a real song session.
    - `playlist.tracks`
    - `patterns`
    - `errors`
-10. Make a small safe sandbox change, such as renaming a mixer track.
-11. Wait for another snapshot or reload the script from Script output.
-12. Check whether the new name appears.
+9. Make a small safe sandbox change, such as renaming a mixer track.
+10. Wait for another snapshot or reload the script from Script output.
+11. Check whether the new name appears in the printed chunks.
 
 ## What To Copy Back To Codex
 
@@ -64,7 +63,7 @@ Copy back:
 - FL Studio version.
 - Whether the script appears in MIDI Settings.
 - Any Script output errors.
-- The latest snapshot JSON after removing any private song/client names.
+- The `SNAPSHOT_BEGIN`, `SNAPSHOT_CHUNK`, and `SNAPSHOT_END` lines after removing any private song/client names.
 - Whether mixer/channel/plugin/playlist sections looked useful.
 - Whether project changed state stayed safe.
 
@@ -73,8 +72,8 @@ Do not copy snapshots from real songs.
 ## Pass Criteria
 
 - Probe loads without compile/runtime errors.
-- Snapshot file is created.
-- Snapshot contains at least project/environment/transport data.
+- Snapshot chunks are printed to Script output.
+- Snapshot chunks contain at least project/environment/transport data.
 - No real project files are changed.
 - No audio export or UI automation occurs.
 
@@ -82,7 +81,7 @@ Do not copy snapshots from real songs.
 
 - Probe does not appear in MIDI Settings.
 - Probe errors on import.
-- Snapshot folder is not created.
+- No `SNAPSHOT_CHUNK` lines appear.
 - FL Studio shows project changes caused by the probe.
 - Any unexpected control/write behavior occurs.
 

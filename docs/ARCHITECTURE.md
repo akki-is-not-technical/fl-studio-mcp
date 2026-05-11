@@ -22,7 +22,7 @@ The probe is intentionally simple:
 
 - Runs inside FL Studio as a MIDI script.
 - Reads available session state.
-- Writes JSON snapshots to a dedicated folder.
+- Prints chunked JSON snapshots to FL Studio Script output.
 - Avoids all FL Studio setter/write/control functions.
 
 ## Future Layers
@@ -46,9 +46,9 @@ Responsibilities:
 
 Candidate transports:
 
-- File inbox/outbox.
+- MIDI/SysEx loopback for FL Studio script communication.
 - Localhost socket if FL Studio's embedded Python supports it reliably.
-- MIDI loopback for narrow/simple command paths.
+- File inbox/outbox only from the external helper side, not from FL Studio's embedded Python unless proven safe.
 
 ### MCP Server
 

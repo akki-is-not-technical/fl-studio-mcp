@@ -1,20 +1,19 @@
 {
-  "schema_version": "0.1.0",
-  "probe_version": "0.1.0",
+  "schema_version": "0.1.1",
+  "probe_version": "0.1.1",
   "generated_at_local": "2026-05-08T03:15:00-0700",
   "reason": "OnInit",
   "read_only": true,
   "environment": {
-    "probe_version": "0.1.0",
-    "snapshot_schema_version": "0.1.0",
+    "probe_version": "0.1.1",
+    "snapshot_schema_version": "0.1.1",
     "python_version": "3.x redacted",
-    "script_output_dir": "C:\\Users\\REDACTED\\Documents\\FL Studio MCP Probe\\Snapshots",
+    "snapshot_transport": "script_output",
+    "file_output": "disabled",
     "module_imports": {
       "json": true,
-      "os": true,
       "sys": true,
       "time": true,
-      "traceback": true,
       "arrangement": true,
       "channels": true,
       "device": true,
@@ -47,7 +46,8 @@
     "bpm": 140.0
   },
   "mixer": {
-    "track_count": 4,
+    "scan_limit": 32,
+    "scanned_track_count": 4,
     "selected_track": 1,
     "tracks": [
       {
@@ -79,7 +79,8 @@
     ]
   },
   "channels": {
-    "channel_count": 2,
+    "scan_limit": 64,
+    "scanned_channel_count": 2,
     "selected_channel": 0,
     "items": [
       {
@@ -120,12 +121,12 @@
       }
     ],
     "parameter_sample_limit": {
-      "generators": 12,
-      "mixer_effects": 12
+      "generators": 4,
+      "mixer_effects": 4
     }
   },
   "playlist": {
-    "scan_limit": 128,
+    "scan_limit": 32,
     "tracks": [
       {
         "index": 1,
@@ -149,7 +150,7 @@
     ]
   },
   "arrangement": {
-    "markers_scan_limit": 128,
+    "markers_scan_limit": 32,
     "markers": []
   },
   "ui": {

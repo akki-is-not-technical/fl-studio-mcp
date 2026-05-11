@@ -8,8 +8,7 @@ Allowed:
 
 - Read project/session metadata exposed by FL Studio.
 - Read mixer/channel/playlist/plugin summaries.
-- Write JSON snapshots/logs to a dedicated probe output folder.
-- Print status messages to FL Studio Script output.
+- Print chunked JSON snapshots and status messages to FL Studio Script output.
 
 Not allowed:
 

@@ -47,22 +47,6 @@ fl-studio\midi-scripts\akki_read_only_probe\
 %USERPROFILE%\Documents\Image-Line\FL Studio\Settings\Hardware\AkkiReadOnlyProbe\device_AkkiReadOnlyProbe.py
 ```
 
-## Optional Output Folder Override
-
-By default, the probe writes snapshots to:
-
-```text
-%USERPROFILE%\Documents\FL Studio MCP Probe\Snapshots\
-```
-
-To choose a different output folder, set a Windows user environment variable:
-
-```text
-FL_MCP_PROBE_OUTPUT_DIR=C:\Users\YOUR_USER\Documents\FL Studio MCP Probe
-```
-
-Restart FL Studio after changing environment variables.
-
 ## Enable In FL Studio
 
 1. Open FL Studio.
@@ -75,17 +59,15 @@ Restart FL Studio after changing environment variables.
 
 ## Expected Output
 
-Snapshot JSON files should appear in:
+The probe prints snapshots to `View -> Script output`. Look for:
 
 ```text
-%USERPROFILE%\Documents\FL Studio MCP Probe\Snapshots\
+[AkkiReadOnlyProbe] SNAPSHOT_BEGIN reason=OnInit chunks=...
+[AkkiReadOnlyProbe] SNAPSHOT_CHUNK 1/... {...}
+[AkkiReadOnlyProbe] SNAPSHOT_END
 ```
 
-File names look like:
-
-```text
-fl_snapshot_20260508_031500_OnInit.json
-```
+No snapshot folder or JSON file is expected in v0.1.1. FL Studio MIDI script filesystem writes are intentionally avoided.
 
 ## Remove
 
