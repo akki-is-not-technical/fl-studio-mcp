@@ -20,17 +20,21 @@ Do not assume FL Studio is installed on the Mac. Do not install this probe into 
 - A sandbox test plan.
 - Snapshot schema and redacted example output.
 - Placeholder docs for the future bridge and MCP server.
+- A repo rulebook for future Codex/research/build sessions.
+- A design-only read-only bridge protocol proposal.
 
 ## Repo Structure
 
 ```text
 fl-studio-mcp/
   README.md
+  AGENTS.md
   .gitignore
   docs/
     ARCHITECTURE.md
     SAFETY.md
     MAC_TO_WINDOWS_WORKFLOW.md
+    BRIDGE_PROTOCOL_PROPOSAL.md
     WINDOWS_PROBE_INSTALL.md
     READ_ONLY_PROBE_TEST_PLAN.md
   fl-studio/

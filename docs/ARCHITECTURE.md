@@ -50,6 +50,10 @@ Candidate transports:
 - Localhost socket if FL Studio's embedded Python supports it reliably.
 - File inbox/outbox only from the external helper side, not from FL Studio's embedded Python unless proven safe.
 
+### Bridge Protocol Proposal
+
+The current bridge direction is documented in [BRIDGE_PROTOCOL_PROPOSAL.md](BRIDGE_PROTOCOL_PROPOSAL.md). It is design-only and does not approve implementation. The current bias is a read-only MIDI/SysEx bridge with explicit request IDs, chunking, timeouts, allowlisted commands, and external companion-side logging.
+
 ### MCP Server
 
 Responsibilities:
